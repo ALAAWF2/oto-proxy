@@ -28,6 +28,23 @@ async function refreshAccessToken() {
 refreshAccessToken();
 setInterval(refreshAccessToken, 1000 * 60 * 50);
 
+// Middlewares
+app.use(express.json());
+
+// ✅ إعدادات CORS
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://alaawf2.github.io");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // ✅ رد سريع على OPTIONS بدون الدخول للمنطق الكامل
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use('/proxy', async (req, res) => {
   try {
     const targetUrl = "https://api.oto.com" + req.url;
